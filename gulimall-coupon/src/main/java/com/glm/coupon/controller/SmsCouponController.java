@@ -25,7 +25,7 @@ import com.glm.common.utils.R;
  * @date 2022-11-18 20:22:09
  */
 @RestController
-@RequestMapping("coupon/smscoupon")
+@RequestMapping("coupon/coupon")
 public class SmsCouponController {
     @Autowired
     private SmsCouponService smsCouponService;
