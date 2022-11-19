@@ -12,6 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 public class GulimallCouponApplication {
 
     public static void main(String[] args) {
+        System.setProperty("spring.cloud.bootstrap.enabled","true");
         SpringApplication.run(GulimallCouponApplication.class, args);
     }
 
