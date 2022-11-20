@@ -2,13 +2,17 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: test-route
-          uri: https://www.google.com/
+        - id: product-route
+          uri: lb://gulimall-product
           predicates:
-            - Query=url, google
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/?(?<segment>.*), /$\{segment}
+
         - id: admin-route
           uri: lb://renren-fast
           predicates:
             - Path=/api/**
           filters:
             - RewritePath=/api/?(?<segment>.*), /renren-fast/$\{segment}
+
