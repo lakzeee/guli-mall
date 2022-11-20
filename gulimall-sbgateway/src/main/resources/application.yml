@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test-route
+          uri: https://www.google.com/
+          predicates:
+            - Query=url, google
+        - id: test-route-apple
+          uri: https://www.apple.com
+          predicates:
+            - Query=url, apple
