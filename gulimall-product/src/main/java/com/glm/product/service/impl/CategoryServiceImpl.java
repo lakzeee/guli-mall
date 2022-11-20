@@ -1,7 +1,12 @@
 package com.glm.product.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,5 +30,39 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         return new PageUtils(page);
     }
+
+    @Override
+    public List<CategoryEntity> listWithTree() {
+        // 1. Get all the category
+        List<CategoryEntity> entities = baseMapper.selectList(null);
+        // 2. Ensemble entities into catalog tree
+        List<CategoryEntity> categoriesTree = entities
+                .stream()
+                .filter(categoryEntity->categoryEntity.getParentCid() == 0)
+                .map((categoryEntity)->{
+                    categoryEntity.setChildren(getChildren(categoryEntity, entities));
+                    return categoryEntity;
+                })
+                .sorted((m1, m2)-> getSortHelper(m1) - getSortHelper(m2))
+                .collect(Collectors.toList());
+        return categoriesTree;
+    }
+
+    private List<CategoryEntity> getChildren(CategoryEntity parentCategory, List<CategoryEntity> allEntities) {
+        return allEntities
+                .stream()
+                .filter(categoryEntity -> categoryEntity.getParentCid() == parentCategory.getCatId())
+                .map(categoryEntity -> {
+                    categoryEntity.setChildren(getChildren(categoryEntity, allEntities));
+                    return categoryEntity;
+                })
+                .sorted((m1, m2)-> getSortHelper(m1) - getSortHelper(m2))
+                .collect(Collectors.toList());
+    }
+    private Integer getSortHelper(CategoryEntity categoryEntity){
+        return categoryEntity.getSort() == null?0:categoryEntity.getSort();
+    }
+
+
 
 }

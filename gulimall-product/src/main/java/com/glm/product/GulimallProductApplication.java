@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class GulimallProductApplication {
 
     public static void main(String[] args) {
+        System.setProperty("spring.cloud.bootstrap.enabled","true");
         SpringApplication.run(GulimallProductApplication.class, args);
     }
 
