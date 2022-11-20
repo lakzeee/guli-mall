@@ -48,6 +48,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return categoriesTree;
     }
 
+    @Override
+    public void removeCategoryByIds(List<Long> asList) {
+        // TODO: check if category is used by somewhere
+        baseMapper.deleteBatchIds(asList);
+    }
+
     private List<CategoryEntity> getChildren(CategoryEntity parentCategory, List<CategoryEntity> allEntities) {
         return allEntities
                 .stream()
