@@ -6,7 +6,9 @@ spring:
           uri: https://www.google.com/
           predicates:
             - Query=url, google
-        - id: test-route-apple
-          uri: https://www.apple.com
+        - id: admin-route
+          uri: lb://renren-fast
           predicates:
-            - Query=url, apple
+            - Path=/api/**
+          filters:
+            - RewritePath=/api/?(?<segment>.*), /renren-fast/$\{segment}
