@@ -81,7 +81,9 @@
           <el-switch
             v-model="scope.row.showStatus"
             active-color="#13ce66"
+            :active-value="1"
             inactive-color="#ff4949"
+            :inactive-value="0"
             @change="updateBrandShowStatus(scope.row)"
           >
           </el-switch>
@@ -169,7 +171,20 @@ export default {
   methods: {
     // 获取数据列表
     updateBrandShowStatus(data) {
-      console.log(data);
+      let { brandId, showStatus } = data;
+      this.$http({
+        url: this.$http.adornUrl("/product/brand/update"),
+        method: "post",
+        data: this.$http.adornData(
+          { brandId, showStatus: showStatus ? 1 : 0 },
+          false
+        )
+      }).then(({ data }) => {
+        this.$message({
+          type: "success",
+          message: "Update Success"
+        });
+      });
     },
     getDataList() {
       this.dataListLoading = true;
