@@ -23,5 +23,6 @@
         <module>renren-generator</module>
         <module>gulimall-common</module>
         <module>gulimall-sbgateway</module>
+        <module>gulimall-connect</module>
     </modules>
 </project>
