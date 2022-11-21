@@ -4,7 +4,8 @@
     :props="defaultProps"
     :expand-on-click-node="false"
     show-checkbox
-    node-key
+    node-key="catId"
+    :default-expanded-keys="expandedKey"
   >
     <span class="custom-tree-node" slot-scope="{ node, data }">
       <span>{{ node.label }}</span>
@@ -35,6 +36,7 @@ export default {
   data() {
     return {
       category: [],
+      expandedKey: [],
       defaultProps: {
         children: "children",
         label: "name"
@@ -53,7 +55,36 @@ export default {
     },
 
     remove(node, data) {
-      console.log("remove", data);
+      var ids = [data.catId];
+      this.$confirm(`You are deleting ${data.name}`, "Warning", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: `${data.name} has been deleted.`
+          });
+        })
+        .then(() => {
+          this.$http({
+            url: this.$http.adornUrl("/product/category/delete"),
+            method: "post",
+            data: this.$http.adornData(ids, false)
+          }).then(({ data }) => {
+            this.getCategory();
+            this.expandedKey = [node.parent.data.catId];
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "Delete Cancel"
+          });
+        });
+
+      console.log("remove", node, data);
     }
   },
   created() {
