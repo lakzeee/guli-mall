@@ -4,9 +4,9 @@
       :data="category"
       :props="defaultProps"
       :expand-on-click-node="false"
-      show-checkbox
       node-key="catId"
       :default-expanded-keys="expandedKey"
+      draggable
     >
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
