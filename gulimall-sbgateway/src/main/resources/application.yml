@@ -9,7 +9,7 @@ spring:
           filters:
             - RewritePath=/api/?(?<segment>.*), /$\{segment}
 
-        - id: connect
+        - id: oss-connect
           uri: lb://gulimall-connect
           predicates:
             - Path=/api/connect/**
