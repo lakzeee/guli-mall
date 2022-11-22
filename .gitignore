@@ -19,3 +19,4 @@ buildNumber.properties
 **/.git
 .DS_Store
 gulimall-connect/src/main/resources/application.properties
+gulimall-connect/src/test/resources/application.properties
