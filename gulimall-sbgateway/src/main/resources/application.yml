@@ -9,6 +9,14 @@ spring:
           filters:
             - RewritePath=/api/?(?<segment>.*), /$\{segment}
 
+        - id: connect
+          uri: lb://gulimall-connect
+          predicates:
+            - Path=/api/connect/**
+          filters:
+            - RewritePath=/api/connect/(?<segment>.*), /$\{segment}
+
+
         - id: admin-route
           uri: lb://renren-fast
           predicates:
