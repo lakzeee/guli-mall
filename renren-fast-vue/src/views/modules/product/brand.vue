@@ -63,6 +63,15 @@
         align="center"
         label="BrandLogoAddr"
       >
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">
+            <img
+              :src="scope.row.logo"
+              alt=""
+              style="width: 100px; height:80px"
+            />
+          </span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="descript"

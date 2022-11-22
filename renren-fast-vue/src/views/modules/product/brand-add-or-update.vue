@@ -11,17 +11,20 @@
       @keyup.enter.native="dataFormSubmit()"
       label-width="140px"
     >
-      <el-form-item label="品牌名" prop="name">
-        <el-input v-model="dataForm.name" placeholder="品牌名"></el-input>
+      <el-form-item label="Name" prop="name">
+        <el-input v-model="dataForm.name" placeholder="Name"></el-input>
       </el-form-item>
-      <el-form-item label="品牌logo地址" prop="logo">
+      <el-form-item label="Logo" prop="logo">
         <!-- <el-input v-model="dataForm.logo" placeholder="品牌logo地址"></el-input> -->
         <single-upload v-model="dataForm.logo"></single-upload>
       </el-form-item>
-      <el-form-item label="介绍" prop="descript">
-        <el-input v-model="dataForm.descript" placeholder="介绍"></el-input>
+      <el-form-item label="Description" prop="descript">
+        <el-input
+          v-model="dataForm.descript"
+          placeholder="Description"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="显示状态" prop="showStatus">
+      <el-form-item label="ShowStatus" prop="showStatus">
         <el-switch
           v-model="dataForm.showStatus"
           active-color="#13ce66"
@@ -31,19 +34,19 @@
         >
         </el-switch>
       </el-form-item>
-      <el-form-item label="检索首字母" prop="firstLetter">
+      <el-form-item label="FirstLetter" prop="firstLetter">
         <el-input
           v-model="dataForm.firstLetter"
-          placeholder="检索首字母"
+          placeholder="FirstLetter"
         ></el-input>
       </el-form-item>
-      <el-form-item label="排序" prop="sort">
-        <el-input v-model="dataForm.sort" placeholder="排序"></el-input>
+      <el-form-item label="Sort" prop="sort">
+        <el-input v-model="dataForm.sort" placeholder="Sort"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button @click="visible = false">Cancel</el-button>
+      <el-button type="primary" @click="dataFormSubmit()">Confirm</el-button>
     </span>
   </el-dialog>
 </template>
@@ -65,24 +68,40 @@ export default {
         sort: ""
       },
       dataRule: {
-        name: [{ required: true, message: "品牌名不能为空", trigger: "blur" }],
+        name: [
+          {
+            required: true,
+            message: "Please Fill In Brand Name",
+            trigger: "blur"
+          }
+        ],
         logo: [
-          { required: true, message: "品牌logo地址不能为空", trigger: "blur" }
+          { required: true, message: "Please Upload A Logo", trigger: "blur" }
         ],
         descript: [
-          { required: true, message: "介绍不能为空", trigger: "blur" }
+          {
+            required: true,
+            message: "Please Fill In Description",
+            trigger: "blur"
+          }
         ],
         showStatus: [
           {
             required: true,
-            message: "显示状态[0-不显示；1-显示]不能为空",
+            message: "On/Off",
             trigger: "blur"
           }
         ],
         firstLetter: [
-          { required: true, message: "检索首字母不能为空", trigger: "blur" }
+          {
+            required: true,
+            message: "Please Fill In Fist Letter",
+            trigger: "blur"
+          }
         ],
-        sort: [{ required: true, message: "排序不能为空", trigger: "blur" }]
+        sort: [
+          { required: true, message: "Please Fill In Sort", trigger: "blur" }
+        ]
       }
     };
   },
@@ -133,7 +152,7 @@ export default {
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.$message({
-                message: "操作成功",
+                message: "Submit Success",
                 type: "success",
                 duration: 1500,
                 onClose: () => {
