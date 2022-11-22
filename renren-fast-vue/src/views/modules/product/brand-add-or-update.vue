@@ -41,7 +41,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="Sort" prop="sort">
-        <el-input v-model="dataForm.sort" placeholder="Sort"></el-input>
+        <el-input v-model.number="dataForm.sort" placeholder="Sort"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -71,17 +71,17 @@ export default {
         name: [
           {
             required: true,
-            message: "Please Fill In Brand Name",
+            message: "Please Fill in Brand Name",
             trigger: "blur"
           }
         ],
         logo: [
-          { required: true, message: "Please Upload A Logo", trigger: "blur" }
+          { required: true, message: "Please Upload a Logo", trigger: "blur" }
         ],
         descript: [
           {
             required: true,
-            message: "Please Fill In Description",
+            message: "Please Fill in Description",
             trigger: "blur"
           }
         ],
@@ -94,13 +94,33 @@ export default {
         ],
         firstLetter: [
           {
-            required: true,
-            message: "Please Fill In Fist Letter",
-            trigger: "blur"
+            validator: (rule, value, callback) => {
+              if (value == "") {
+                callback(new Error("Please Fill in First Letter"));
+              } else if (!/^[a-zA-Z]$/.test(value)) {
+                callback(new Error("Please Fill in a Letter"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur",
+            required: true
           }
         ],
         sort: [
-          { required: true, message: "Please Fill In Sort", trigger: "blur" }
+          {
+            validator: (rule, value, callback) => {
+              if (value == "") {
+                callback(new Error("Please Fill in Sort"));
+              } else if (!Number.isInteger(value) || value < 0) {
+                callback(new Error("Please Fill in a Non-negative Integer"));
+              } else {
+                callback();
+              }
+            },
+            required: true,
+            trigger: "blur"
+          }
         ]
       }
     };
