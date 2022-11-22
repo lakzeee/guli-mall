@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.glm.common.valid.AddGroup;
+import com.glm.common.valid.UpdateGroup;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
@@ -25,18 +28,20 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 品牌id
 	 */
+	@NotNull(message = "Modifying require specify id", groups = {UpdateGroup.class})
+	@Null(message = "Can't specify id when adding", groups = {AddGroup.class})
 	@TableId
 	private Long brandId;
 	/**
 	 * 品牌名
 	 */
-	@NotEmpty(message = "Brand name is blank")
+	@NotEmpty(message = "Brand name is blank", groups = {UpdateGroup.class, AddGroup.class})
 	private String name;
 	/**
 	 * 品牌logo地址
 	 */
-	@NotEmpty
-	@URL(message = "Not a valid url")
+	@NotEmpty(groups = {AddGroup.class})
+	@URL(message = "Not a valid url", groups = {UpdateGroup.class, AddGroup.class})
 	private String logo;
 	/**
 	 * 介绍
@@ -49,14 +54,14 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 检索首字母
 	 */
-	@NotEmpty
-	@Pattern(regexp = "/^[a-zA-Z]$/",message = "Not a letter")
+	@NotEmpty(groups = {AddGroup.class})
+	@Pattern(regexp = "/^[a-zA-Z]$/",message = "Not a letter", groups = {UpdateGroup.class, AddGroup.class})
 	private String firstLetter;
 	/**
 	 * 排序
 	 */
-	@NotNull
-	@Min(value = 0, message = "Not a non-negative number")
+	@NotNull(groups = {AddGroup.class})
+	@Min(value = 0, message = "Not a non-negative number", groups = {UpdateGroup.class, AddGroup.class})
 	private Integer sort;
 
 }
