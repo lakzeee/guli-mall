@@ -9,6 +9,7 @@ import java.util.Date;
 import com.glm.common.annotation.ListValue;
 import com.glm.common.valid.AddGroup;
 import com.glm.common.valid.UpdateGroup;
+import com.glm.common.valid.UpdateStatusGroup;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
@@ -51,13 +52,14 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 显示状态[0-不显示；1-显示]
 	 */
-	@ListValue(values = {1, 0}, groups = {AddGroup.class})
+	@NotNull(groups = {UpdateStatusGroup.class})
+	@ListValue(values = {1, 0}, groups = {AddGroup.class, UpdateStatusGroup.class})
 	private Integer showStatus;
 	/**
 	 * 检索首字母
 	 */
 	@NotEmpty(groups = {AddGroup.class})
-	@Pattern(regexp = "/^[a-zA-Z]$/",message = "Not a letter", groups = {UpdateGroup.class, AddGroup.class})
+	@Pattern(regexp = "^[a-zA-Z]$",message = "Not a letter", groups = {UpdateGroup.class, AddGroup.class})
 	private String firstLetter;
 	/**
 	 * 排序
