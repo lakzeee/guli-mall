@@ -14,9 +14,9 @@ class GulimallConnectApplicationTests {
     OSSClient ossClient;
     @Test
     public void te() throws FileNotFoundException {
-        FileInputStream inputStream = new FileInputStream("/Users/lak/Downloads/oss-test-upload.png");
-        ossClient.putObject("gulimall-lak","oss-test-upload4.jpg",inputStream);
-        ossClient.shutdown();
-        System.out.println("上传完成");
+//        FileInputStream inputStream = new FileInputStream("/Users/lak/Downloads/oss-test-upload.png");
+//        ossClient.putObject("gulimall-lak","oss-test-upload4.jpg",inputStream);
+//        ossClient.shutdown();
+//        System.out.println("上传完成");
     }
 }

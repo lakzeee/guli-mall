@@ -91,7 +91,7 @@ public class BrandController {
         return R.ok();
     }
 
-    /**
+    /**6 ;,./
      * 删除
      */
     @RequestMapping("/delete")

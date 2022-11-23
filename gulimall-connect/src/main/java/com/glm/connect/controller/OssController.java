@@ -7,6 +7,7 @@ import com.aliyun.oss.model.PolicyConditions;
 import com.glm.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,11 +18,13 @@ import java.util.Map;
 
 
 @RestController
+@Service
 public class OssController {
     @Autowired
     OSS ossClient;
 
-    @Value("${spring.cloud.alicloud.oss.bucket}")
+//    @Value("${spring.cloud.alicloud.oss.bucket}")
+    @Value("${oss.bucket:gulimall-lak}")
     private String bucket;
     @Value("${spring.cloud.alicloud.oss.endpoint}")
     private String endpoint;

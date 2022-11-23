@@ -28,6 +28,7 @@ public class GulimallExceptionControllerAdvice {
 
     @ExceptionHandler(value = Throwable.class)
     public R handleException(Throwable throwable){
+        log.error("Unknown Error", throwable);
         return R.error(ExceptionCodeEnum.UNKNOWN_EXCEOTION.getCode(), ExceptionCodeEnum.UNKNOWN_EXCEOTION.getMsg());
     }
 }

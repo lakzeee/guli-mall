@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.glm.common.annotation.ListValue;
 import com.glm.common.valid.AddGroup;
 import com.glm.common.valid.UpdateGroup;
 import lombok.Data;
@@ -50,6 +51,7 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 显示状态[0-不显示；1-显示]
 	 */
+	@ListValue(values = {1, 0}, groups = {AddGroup.class})
 	private Integer showStatus;
 	/**
 	 * 检索首字母
