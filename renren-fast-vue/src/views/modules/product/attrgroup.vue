@@ -140,6 +140,7 @@ export default {
   components: { categoryTree, AddOrUpdate },
   data() {
     return {
+      catId: 0,
       dataForm: {
         key: ""
       },
@@ -158,12 +159,17 @@ export default {
   methods: {
     attrGroupReceive(data, node, component) {
       console.log("attrgroup receiving:", data, node, component);
+      if (node.level == 3) {
+        console.log("level 3 node clicked");
+        this.catId = data.catId;
+        this.getDataList();
+      }
     },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl("/product/attrgroup/list"),
+        url: this.$http.adornUrl(`/product/attrgroup/list/${this.catId}`),
         method: "get",
         params: this.$http.adornParams({
           page: this.pageIndex,
