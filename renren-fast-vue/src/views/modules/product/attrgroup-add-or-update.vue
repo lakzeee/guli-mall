@@ -3,6 +3,7 @@
     :title="!dataForm.attrGroupId ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible"
+    @closed="dialogClose"
   >
     <el-form
       :model="dataForm"
@@ -32,7 +33,9 @@
           placeholder="所属分类id"
         ></el-input> -->
         <el-cascader
-          v-model="dataForm.catelogIds"
+          filterable
+          placeholder="Type Here"
+          v-model="dataForm.catelogPath"
           :options="category"
           :props="cascaderProps"
         ></el-cascader>
@@ -59,7 +62,7 @@ export default {
         descript: "",
         icon: "",
         catelogId: "",
-        catelogIds: []
+        catelogPath: []
       },
       dataRule: {
         attrGroupName: [
@@ -70,13 +73,16 @@ export default {
           { required: true, message: "描述不能为空", trigger: "blur" }
         ],
         icon: [{ required: true, message: "组图标不能为空", trigger: "blur" }],
-        catelogIds: [
+        catelogPath: [
           { required: true, message: "所属分类id不能为空", trigger: "blur" }
         ]
       }
     };
   },
   methods: {
+    dialogClose() {
+      this.dataForm.catelogPath = [];
+    },
     getCategory() {
       this.$http({
         url: this.$http.adornUrl("/product/category/list/tree"),
@@ -102,6 +108,7 @@ export default {
               this.dataForm.descript = data.attrGroup.descript;
               this.dataForm.icon = data.attrGroup.icon;
               this.dataForm.catelogId = data.attrGroup.catelogId;
+              this.dataForm.catelogPath = data.attrGroup.catelogPath;
             }
           });
         }
@@ -124,8 +131,8 @@ export default {
               sort: this.dataForm.sort,
               descript: this.dataForm.descript,
               icon: this.dataForm.icon,
-              catelogId: this.dataForm.catelogIds[
-                this.dataForm.catelogIds.length - 1
+              catelogId: this.dataForm.catelogPath[
+                this.dataForm.catelogPath.length - 1
               ]
             })
           }).then(({ data }) => {
