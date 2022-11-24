@@ -19,4 +19,6 @@ mybatis-plus:
       logic-not-delete-value: 0
 server:
   port: 10000
-
+logging:
+  level:
+    com.glm.product: debug
