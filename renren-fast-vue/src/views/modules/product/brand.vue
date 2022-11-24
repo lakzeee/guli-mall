@@ -68,7 +68,7 @@
             <img
               :src="scope.row.logo"
               alt=""
-              style="width: 100px; height:80px"
+              style="width: 100px; height:100px"
             />
           </span>
         </template>
