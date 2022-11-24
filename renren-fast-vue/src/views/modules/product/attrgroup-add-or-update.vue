@@ -27,10 +27,15 @@
         <el-input v-model="dataForm.icon" placeholder="组图标"></el-input>
       </el-form-item>
       <el-form-item label="所属分类id" prop="catelogId">
-        <el-input
+        <!-- <el-input
           v-model="dataForm.catelogId"
           placeholder="所属分类id"
-        ></el-input>
+        ></el-input> -->
+        <el-cascader
+          v-model="dataForm.catelogIds"
+          :options="category"
+          :props="cascaderProps"
+        ></el-cascader>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -45,13 +50,16 @@ export default {
   data() {
     return {
       visible: false,
+      category: [],
+      cascaderProps: { value: "catId", label: "name", children: "children" },
       dataForm: {
         attrGroupId: 0,
         attrGroupName: "",
         sort: "",
         descript: "",
         icon: "",
-        catelogId: ""
+        catelogId: "",
+        catelogIds: []
       },
       dataRule: {
         attrGroupName: [
@@ -62,13 +70,19 @@ export default {
           { required: true, message: "描述不能为空", trigger: "blur" }
         ],
         icon: [{ required: true, message: "组图标不能为空", trigger: "blur" }],
-        catelogId: [
+        catelogIds: [
           { required: true, message: "所属分类id不能为空", trigger: "blur" }
         ]
       }
     };
   },
   methods: {
+    getCategory() {
+      this.$http({
+        url: this.$http.adornUrl("/product/category/list/tree"),
+        method: "get"
+      }).then(({ data }) => (this.category = data.data));
+    },
     init(id) {
       this.dataForm.attrGroupId = id || 0;
       this.visible = true;
@@ -110,7 +124,9 @@ export default {
               sort: this.dataForm.sort,
               descript: this.dataForm.descript,
               icon: this.dataForm.icon,
-              catelogId: this.dataForm.catelogId
+              catelogId: this.dataForm.catelogIds[
+                this.dataForm.catelogIds.length - 1
+              ]
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -130,6 +146,9 @@ export default {
         }
       });
     }
+  },
+  created() {
+    this.getCategory();
   }
 };
 </script>
