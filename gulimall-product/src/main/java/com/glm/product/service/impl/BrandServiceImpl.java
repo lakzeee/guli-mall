@@ -1,6 +1,8 @@
 package com.glm.product.service.impl;
 
+import com.glm.product.service.CategoryBrandRelationService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,6 +19,9 @@ import com.glm.product.service.BrandService;
 @Service("brandService")
 public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> implements BrandService {
 
+    @Autowired
+    CategoryBrandRelationService categoryBrandRelationService;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         String key = (String) params.get("key");
@@ -29,6 +34,15 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public void updateDetail(BrandEntity brand){
+        this.updateById(brand);
+        if(!StringUtils.isEmpty(brand.getName())){
+            categoryBrandRelationService.updateBrand(brand.getBrandId(), brand.getName());
+            // TODO
+        }
     }
 
 }

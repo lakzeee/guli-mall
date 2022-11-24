@@ -1,5 +1,6 @@
 package com.glm.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.glm.product.dao.BrandDao;
 import com.glm.product.dao.CategoryDao;
 import com.glm.product.entity.BrandEntity;
@@ -47,6 +48,14 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         this.save(categoryBrandRelation);
 
 
+    }
+
+    @Override
+    public void updateBrand(Long brandId, String name) {
+        CategoryBrandRelationEntity relationEntity = new CategoryBrandRelationEntity();
+        relationEntity.setBrandId(brandId);
+        relationEntity.setBrandName(name);
+        this.update(relationEntity, new UpdateWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId));
     }
 
 }
