@@ -81,27 +81,28 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
                 queryWrapper
         );
         // TODO fix bug here
-//        PageUtils pageUtils = new PageUtils(page);
-//        List<AttrEntity> records = page.getRecords();
-//        List<AttrRespVo> respVos = records.stream().map(attrEntity -> {
-//            AttrRespVo attrRespVo = new AttrRespVo();
-//            BeanUtils.copyProperties(attrEntity, attrRespVo);
-//            AttrAttrgroupRelationEntity attrId = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>()
-//                                                            .eq("attr_id", attrEntity.getAttrId()));
-//            if(attrId != null){
-//                AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrId.getAttrGroupId());
-//                attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
-//            }
-//            CategoryEntity categoryEntity = categoryDao.selectById(attrEntity.getCatelogId());
-//            if(categoryEntity!=null){
-//                attrRespVo.setCatelogName(categoryEntity.getName());
-//            }
-//            return attrRespVo;
-//        }).collect(Collectors.toList());
-//
-//        pageUtils.setList(respVos);
+        PageUtils pageUtils = new PageUtils(page);
+        List<AttrEntity> records = page.getRecords();
+        List<AttrRespVo> respVos = records.stream().map((attrEntity) -> {
+            AttrRespVo attrRespVo = new AttrRespVo();
+            BeanUtils.copyProperties(attrEntity, attrRespVo);
 
-        return new PageUtils(page);
+            AttrAttrgroupRelationEntity attrId = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>()
+                                                            .eq("attr_id", attrEntity.getAttrId()));
+            if(attrId != null){
+                AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrId.getAttrGroupId());
+                attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
+            }
+            CategoryEntity categoryEntity = categoryDao.selectById(attrEntity.getCatelogId());
+            if(categoryEntity!=null){
+                attrRespVo.setCatelogName(categoryEntity.getName());
+            }
+            return attrRespVo;
+        }).collect(Collectors.toList());
+
+        pageUtils.setList(respVos);
+
+        return pageUtils;
     }
 
 }
