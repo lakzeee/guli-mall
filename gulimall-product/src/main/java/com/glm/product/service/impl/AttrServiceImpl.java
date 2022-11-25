@@ -9,6 +9,7 @@ import com.glm.product.entity.AttrAttrgroupRelationEntity;
 import com.glm.product.entity.AttrGroupEntity;
 import com.glm.product.entity.CategoryEntity;
 import com.glm.product.service.CategoryService;
+import com.glm.product.vo.AttrGroupRelationVo;
 import com.glm.product.vo.AttrRespVo;
 import com.glm.product.vo.AttrVo;
 import org.apache.commons.lang.StringUtils;
@@ -16,10 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -180,6 +178,17 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }).collect(Collectors.toList());
         Collection<AttrEntity> attrEntities = this.listByIds(attrIds);
         return (List<AttrEntity>) attrEntities;
+    }
+
+    @Override
+    public void deleteRelation(AttrGroupRelationVo[] attrGroupRelationVos) {
+        //relationDao.delete(new QueryWrapper<>().eq("attr_id", 1L).eq("attr_group_id", 1L));
+        List<AttrAttrgroupRelationEntity> entities = Arrays.asList(attrGroupRelationVos).stream().map((item) -> {
+            AttrAttrgroupRelationEntity attrgroupRelationEntity = new AttrAttrgroupRelationEntity();
+            BeanUtils.copyProperties(item, attrgroupRelationEntity);
+            return attrgroupRelationEntity;
+        }).collect(Collectors.toList());
+        relationDao.deleteBatchRelations(entities);
     }
 
 }

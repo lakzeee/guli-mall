@@ -3,6 +3,7 @@ package com.glm.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.glm.common.utils.PageUtils;
 import com.glm.product.entity.AttrEntity;
+import com.glm.product.vo.AttrGroupRelationVo;
 import com.glm.product.vo.AttrRespVo;
 import com.glm.product.vo.AttrVo;
 
@@ -29,5 +30,7 @@ public interface AttrService extends IService<AttrEntity> {
     void updateAttr(AttrVo attr);
 
     List<AttrEntity> getRelationAttr(Long attrgroupId);
+
+    void deleteRelation(AttrGroupRelationVo[] attrGroupRelationVos);
 }
 
