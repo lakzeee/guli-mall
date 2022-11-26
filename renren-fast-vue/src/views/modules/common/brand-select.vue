@@ -38,7 +38,7 @@ export default {
   //监控data中的数据变化
   watch: {
     brandId(val) {
-      this.PubSub.publish("brandId", val);
+      PubSub.publish("brandId", val);
     }
   },
   //方法集合
@@ -53,8 +53,7 @@ export default {
       }).then(({ data }) => {
         this.brands = data.data;
       });
-    },
-    PubSub() {}
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
