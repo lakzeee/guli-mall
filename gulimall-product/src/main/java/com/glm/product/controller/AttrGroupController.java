@@ -9,6 +9,7 @@ import com.glm.product.service.AttrAttrgroupRelationService;
 import com.glm.product.service.AttrService;
 import com.glm.product.service.CategoryService;
 import com.glm.product.vo.AttrGroupRelationVo;
+import com.glm.product.vo.AttrGroupWithAttrsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,15 @@ public class AttrGroupController {
     public R addRelation(@RequestBody List<AttrGroupRelationVo> vos){
         attrAttrgroupRelationService.saveBatch(vos);
         return R.ok();
+    }
+
+    @GetMapping("{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable("catelogId") Long catelogId){
+        // 1. get all of the attrGroup of current catelogId
+        // 2. get all attr of current attrGroup
+        List<AttrGroupWithAttrsVo> vos = attrGroupService.getAttrGroupWithAttrsByCatelogId(catelogId);
+        return R.ok().put("data", vos);
+
     }
 
 

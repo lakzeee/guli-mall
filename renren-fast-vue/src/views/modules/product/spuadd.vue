@@ -430,12 +430,12 @@ export default {
         brandId: [
           { required: true, message: "请选择一个品牌", trigger: "blur" }
         ],
-        decript: [
-          { required: true, message: "请上传商品详情图集", trigger: "blur" }
-        ],
-        images: [
-          { required: true, message: "请上传商品图片集", trigger: "blur" }
-        ],
+        // decript: [
+        //   { required: true, message: "请上传商品详情图集", trigger: "blur" }
+        // ],
+        // images: [
+        //   { required: true, message: "请上传商品图片集", trigger: "blur" }
+        // ],
         weight: [
           {
             type: "number",
@@ -713,15 +713,17 @@ export default {
         }).then(({ data }) => {
           //先对表单的baseAttrs进行初始化
           data.data.forEach(item => {
-            let attrArray = [];
-            item.attrs.forEach(attr => {
-              attrArray.push({
-                attrId: attr.attrId,
-                attrValues: "",
-                showDesc: attr.showDesc
+            if (item.attrs != null && item.attrs.length > 0) {
+              let attrArray = [];
+              item.attrs.forEach(attr => {
+                attrArray.push({
+                  attrId: attr.attrId,
+                  attrValues: "",
+                  showDesc: attr.showDesc
+                });
               });
-            });
-            this.dataResp.baseAttrs.push(attrArray);
+              this.dataResp.baseAttrs.push(attrArray);
+            }
           });
           this.dataResp.steped[0] = 0;
           this.dataResp.attrGroups = data.data;
