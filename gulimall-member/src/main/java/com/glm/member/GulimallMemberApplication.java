@@ -11,6 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class GulimallMemberApplication {
 
     public static void main(String[] args) {
+        System.setProperty("spring.cloud.bootstrap.enabled","true");
         SpringApplication.run(GulimallMemberApplication.class, args);
     }
 }
