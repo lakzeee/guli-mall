@@ -80,4 +80,36 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
         this.updateById(purchaseEntity);
     }
 
+    @Override
+    public void receivedPurchaseOrder(List<Long> ids) {
+        List<PurchaseEntity> collect = ids.stream().map(id -> {
+            PurchaseEntity byId = this.getById(id);
+            return byId;
+        }).filter(item -> {
+            if (item.getStatus() == WarehouseConst.PurchaseDetailStatusEnum.CREATED.getCode() ||
+                    item.getStatus() == WarehouseConst.PurchaseDetailStatusEnum.ASSIGNED.getCode()){
+                return true;
+            }
+            return false;
+        }).map(item->{
+            item.setStatus(WarehouseConst.PurchaseStatusEnum.RECEIVED.getCode());
+            return item;
+        }).collect(Collectors.toList());
+
+        this.updateBatchById(collect);
+
+        collect.forEach(item->{
+            List<PurchaseDetailEntity> entities = purchaseDetailService.listDetailByPurchaseId(item.getId());
+            List<PurchaseDetailEntity> collect1 = entities.stream().map(entity -> {
+                PurchaseDetailEntity detailEntity = new PurchaseDetailEntity();
+                detailEntity.setId(entity.getId());
+                detailEntity.setStatus(WarehouseConst.PurchaseDetailStatusEnum.PURCHASING.getCode());
+                return detailEntity;
+            }).collect(Collectors.toList());
+
+            purchaseDetailService.updateBatchById(collect1);
+        });
+    }
+
+
 }

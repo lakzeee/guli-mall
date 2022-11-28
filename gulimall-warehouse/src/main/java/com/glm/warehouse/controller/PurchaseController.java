@@ -2,6 +2,7 @@ package com.glm.warehouse.controller;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.glm.warehouse.vo.MergeVo;
@@ -27,6 +28,13 @@ import com.glm.common.utils.R;
 public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
+
+    @PostMapping("/received")
+    public R merge(@RequestBody List<Long> ids){
+        purchaseService.receivedPurchaseOrder(ids);
+
+        return R.ok();
+    }
 
 
     @PostMapping("/merge")
