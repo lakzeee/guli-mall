@@ -25,7 +25,7 @@ import com.glm.common.utils.R;
  * @date 2022-11-18 21:06:05
  */
 @RestController
-@RequestMapping("warehouse/wareordertaskdetail")
+@RequestMapping("ware/wareordertaskdetail")
 public class WareOrderTaskDetailController {
     @Autowired
     private WareOrderTaskDetailService wareOrderTaskDetailService;

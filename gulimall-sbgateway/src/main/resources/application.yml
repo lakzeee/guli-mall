@@ -16,6 +16,13 @@ spring:
           filters:
             - RewritePath=/api/?(?<segment>.*), /$\{segment}
 
+        - id: warehouse-route
+          uri: lb://gulimall-warehouse
+          predicates:
+            - Path=/api/ware/**
+          filters:
+            - RewritePath=/api/?(?<segment>.*), /$\{segment}
+
         - id: oss-connect
           uri: lb://gulimall-connect
           predicates:

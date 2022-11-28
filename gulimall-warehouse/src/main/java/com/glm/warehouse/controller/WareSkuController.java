@@ -25,7 +25,7 @@ import com.glm.common.utils.R;
  * @date 2022-11-18 21:06:05
  */
 @RestController
-@RequestMapping("warehouse/waresku")
+@RequestMapping("ware/waresku")
 public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
