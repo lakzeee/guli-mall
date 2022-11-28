@@ -20,3 +20,7 @@ mybatis-plus:
       id-type: auto
 server:
   port: 8084
+
+logging:
+  level:
+    com.glm: debug
