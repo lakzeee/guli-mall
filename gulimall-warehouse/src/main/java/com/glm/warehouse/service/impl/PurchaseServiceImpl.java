@@ -1,12 +1,18 @@
 package com.glm.warehouse.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.glm.common.constant.WarehouseConst;
+import com.glm.warehouse.dao.PurchaseDetailDao;
 import com.glm.warehouse.entity.PurchaseDetailEntity;
 import com.glm.warehouse.service.PurchaseDetailService;
+import com.glm.warehouse.service.WareSkuService;
 import com.glm.warehouse.vo.MergeVo;
+import com.glm.warehouse.vo.PurchaseFinishedItemsVo;
+import com.glm.warehouse.vo.PurchaseFinishedVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +35,12 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
 
     @Autowired
     PurchaseDetailService purchaseDetailService;
+
+    @Autowired
+    PurchaseDetailDao purchaseDetailDao;
+
+    @Autowired
+    WareSkuService wareSkuService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -111,5 +123,39 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
         });
     }
 
+    @Transactional
+    @Override
+    public void done(PurchaseFinishedVo doneVo) {
+        Long id = doneVo.getId();
 
+        Boolean flag = true;
+        List<PurchaseFinishedItemsVo> items = doneVo.getItems();
+
+        ArrayList<PurchaseDetailEntity> updates = new ArrayList<>();
+
+        if(items != null && items.size() > 0){
+            for (PurchaseFinishedItemsVo item : items) {
+                LambdaQueryWrapper<PurchaseDetailEntity> wrapper = new LambdaQueryWrapper<PurchaseDetailEntity>();
+                PurchaseDetailEntity entity = purchaseDetailDao.selectOne(wrapper.and(w -> {
+                    w.eq(PurchaseDetailEntity::getPurchaseId, id).eq(PurchaseDetailEntity::getSkuId, item.getItemId());
+                }));
+                if(item.getStatus() == WarehouseConst.PurchaseDetailStatusEnum.HASERROR.getCode()) {
+                    flag = false;
+                    entity.setStatus(item.getStatus());
+                }else {
+                    entity.setStatus(WarehouseConst.PurchaseDetailStatusEnum.FINISHED.getCode());
+                    wareSkuService.addStock(entity.getSkuId(), entity.getWareId(), entity.getSkuNum());
+                }
+                updates.add(entity);
+            }
+            purchaseDetailService.updateBatchById(updates);
+        }
+
+        PurchaseEntity purchaseEntity = new PurchaseEntity();
+        purchaseEntity.setId(id);
+        purchaseEntity.setStatus(flag?WarehouseConst.PurchaseStatusEnum.FINISHED.getCode() : WarehouseConst.PurchaseStatusEnum.HASERROR.getCode());
+        purchaseEntity.setUpdateTime(new Date());
+        this.updateById(purchaseEntity);
+
+    }
 }

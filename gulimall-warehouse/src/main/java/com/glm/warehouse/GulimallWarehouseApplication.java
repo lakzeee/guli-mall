@@ -8,9 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableFeignClients
-@EnableTransactionManagement
 @EnableDiscoveryClient
-@MapperScan("com.glm.warehouse.dao")
 @SpringBootApplication
 public class GulimallWarehouseApplication {
 
