@@ -6,7 +6,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.commons.util.UtilAutoConfiguration;
 
 @EnableDiscoveryClient
-@SpringBootApplication(exclude = {UtilAutoConfiguration.class, })
+@SpringBootApplication(exclude = {UtilAutoConfiguration.class})
 public class GulimallConnectApplication {
     public static void main(String[] args) {
         System.setProperty("spring.cloud.bootstrap.enabled","true");
