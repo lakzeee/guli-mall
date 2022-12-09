@@ -1,14 +1,12 @@
 package com.glm.warehouse.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.glm.warehouse.vo.SkuHasStockVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.glm.warehouse.entity.WareSkuEntity;
 import com.glm.warehouse.service.WareSkuService;
@@ -30,6 +28,13 @@ public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
 
+    @PostMapping("/hasstock")
+    public R<List<SkuHasStockVo>> getSkusHasStock(@RequestBody List<Long> skuIds){
+        List<SkuHasStockVo> vos = wareSkuService.getSkuAvail(skuIds);
+        R<List<SkuHasStockVo>> ok = R.ok();
+        ok.setData(vos);
+        return ok;
+    }
     /**
      * 列表
      */

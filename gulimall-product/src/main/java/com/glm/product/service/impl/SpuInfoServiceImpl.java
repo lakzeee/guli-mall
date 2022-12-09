@@ -1,10 +1,15 @@
 package com.glm.product.service.impl;
 
+import com.glm.common.constant.ProductConst;
+import com.glm.common.to.SkuHasStockVo;
 import com.glm.common.to.SkuReductionTo;
 import com.glm.common.to.SpuBoundsTo;
+import com.glm.common.to.es.SkuEsModel;
 import com.glm.common.utils.R;
 import com.glm.product.entity.*;
 import com.glm.product.feign.CouponFeignService;
+import com.glm.product.feign.SearchFeignService;
+import com.glm.product.feign.WarehouseFeignService;
 import com.glm.product.service.*;
 import com.glm.product.vo.*;
 import org.apache.commons.lang.StringUtils;
@@ -13,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -26,7 +29,6 @@ import com.glm.common.utils.Query;
 
 import com.glm.product.dao.SpuInfoDao;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 
 @Service("spuInfoService")
@@ -42,7 +44,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     AttrService attrService;
 
     @Autowired
-    ProductAttrValueService productAttrValueService;
+    ProductAttrValueService attrValueService;
 
     @Autowired
     SkuInfoService skuInfoService;
@@ -56,7 +58,17 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Autowired
     CouponFeignService couponFeignService;
 
+    @Autowired
+    BrandService brandService;
 
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    WarehouseFeignService warehouseFeignService;
+
+    @Autowired
+    SearchFeignService searchFeignService;
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<SpuInfoEntity> page = this.page(
@@ -101,7 +113,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             return productAttrValueEntity;
         }).collect(Collectors.toList());
 
-        productAttrValueService.saveProductAttr(collect);
+        attrValueService.saveProductAttr(collect);
 
         // 5. save bounds info: sms_sup_bounds: ok
         Bounds bounds = vo.getBounds();
@@ -210,6 +222,76 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 new Query<SpuInfoEntity>().getPage(params), wrapper
         );
         return new PageUtils(page);
+    }
+
+    @Override
+    public void up(Long spuId) {
+        List<SkuInfoEntity> skus = skuInfoService.getSkuBySpuId(spuId);
+        List<Long> skuIdList = skus.stream().map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
+
+        List<ProductAttrValueEntity> baseAttrs = attrValueService.baseAttrListForSpu(spuId);
+        List<Long> attrIds = baseAttrs.stream().map(attr -> {
+            return attr.getAttrId();
+        }).collect(Collectors.toList());
+
+        List<Long> searchAttrIds = attrService.selectSearchAttrIds(attrIds);
+
+        Set<Long> idSet = new HashSet<>(searchAttrIds);
+
+        List<SkuEsModel.Attr> attrList = baseAttrs.stream().filter(attr -> {
+            return idSet.contains(attr.getAttrId());
+        }).map(attr -> {
+            SkuEsModel.Attr attr1 = new SkuEsModel.Attr();
+            BeanUtils.copyProperties(attr, attr1);
+            return attr1;
+        }).collect(Collectors.toList());
+
+        // TODO remote request to get if has stock
+        Map<Long, Boolean> stockMap = null;
+        try{
+            R<List<SkuHasStockVo>> skusHasStock = warehouseFeignService.getSkusHasStock(skuIdList);
+            stockMap = skusHasStock.getData().stream().collect(Collectors.toMap(
+                    SkuHasStockVo::getSkuId, item -> item.getHasStock()
+            ));
+        }catch (Exception e){
+            log.error("eror occur when getting warehouse data:{}", e);
+        }
+        Map<Long, Boolean> finalStockMap = stockMap;
+
+        List<SkuEsModel> upProducts = skus.stream().map(sku -> {
+            SkuEsModel esModel = new SkuEsModel();
+            BeanUtils.copyProperties(sku, esModel);
+
+            esModel.setSkuPrice(sku.getPrice());
+            esModel.setSkuImg(sku.getSkuDefaultImg());
+
+            if(finalStockMap == null){
+                esModel.setHasStock(true);
+            }else{
+                esModel.setHasStock(finalStockMap.get(sku.getSkuId()));
+            }
+
+            BrandEntity brand = brandService.getById(esModel.getBrandId());
+            esModel.setBrandName(brand.getName());
+            esModel.setBrandImg(brand.getLogo());
+
+            CategoryEntity category = categoryService.getById(esModel.getCatalogId());
+            esModel.setCatalogName(category.getName());
+
+            esModel.setAttrs(attrList);
+
+            esModel.setHotScore(0L);
+
+            return esModel;
+        }).collect(Collectors.toList());
+
+        R r = searchFeignService.productStatusUp(upProducts);
+        if(r.getCode() == 0){
+            baseMapper.updateSpuStatus(spuId, ProductConst.StatusEnum.SPU_UP.getCode());
+        }else {
+
+        }
+
     }
 
 }

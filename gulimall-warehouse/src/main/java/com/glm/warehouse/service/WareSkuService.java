@@ -3,7 +3,9 @@ package com.glm.warehouse.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.glm.common.utils.PageUtils;
 import com.glm.warehouse.entity.WareSkuEntity;
+import com.glm.warehouse.vo.SkuHasStockVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,5 +20,7 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void addStock(Long skuId, Long wareId, Integer skuNum);
+
+    List<SkuHasStockVo> getSkuAvail(List<Long> skuIds);
 }
 
