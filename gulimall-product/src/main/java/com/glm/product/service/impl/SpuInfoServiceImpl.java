@@ -13,6 +13,7 @@ import com.glm.product.feign.WarehouseFeignService;
 import com.glm.product.service.*;
 import com.glm.product.vo.*;
 import org.apache.commons.lang.StringUtils;
+import com.alibaba.fastjson.TypeReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -249,8 +250,10 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         // TODO remote request to get if has stock
         Map<Long, Boolean> stockMap = null;
         try{
-            R<List<SkuHasStockVo>> skusHasStock = warehouseFeignService.getSkusHasStock(skuIdList);
-            stockMap = skusHasStock.getData().stream().collect(Collectors.toMap(
+            R r = warehouseFeignService.getSkusHasStock(skuIdList);
+            TypeReference<List<SkuHasStockVo>> typeReference = new TypeReference<List<SkuHasStockVo>>() {
+            };
+            stockMap = r.getData(typeReference).stream().collect(Collectors.toMap(
                     SkuHasStockVo::getSkuId, item -> item.getHasStock()
             ));
         }catch (Exception e){

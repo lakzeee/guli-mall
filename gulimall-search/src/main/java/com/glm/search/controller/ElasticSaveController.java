@@ -31,7 +31,7 @@ public class ElasticSaveController {
             log.error("ElasticController changing production status to up failed: {}", e);
             return R.error(ExceptionCodeEnum.PRODUCT_UP_EXCEPTION.getCode(), ExceptionCodeEnum.PRODUCT_UP_EXCEPTION.getMsg());
         }
-        if(b){
+        if(!b){
             return R.ok();
         }else {
             return R.error(ExceptionCodeEnum.PRODUCT_UP_EXCEPTION.getCode(), ExceptionCodeEnum.PRODUCT_UP_EXCEPTION.getMsg());
